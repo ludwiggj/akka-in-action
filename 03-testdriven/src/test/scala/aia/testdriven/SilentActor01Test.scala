@@ -1,34 +1,41 @@
 package aia.testdriven
 
-import org.scalatest.{WordSpecLike, MustMatchers}
-import akka.testkit.TestKit
+import aia.testdriven.SilentActor.{GetState, SilentMessage}
+import org.scalatest.{MustMatchers, WordSpecLike}
+import akka.testkit.{TestActorRef, TestKit}
 import akka.actor._
 
-//This test is ignored in the BookBuild, it's added to the defaultExcludedNames
-//<start id="ch02-silentactor-test01"/>
-class SilentActor01Test extends TestKit(ActorSystem("testsystem")) //<co id="ch02-silentactor-test01-provide-system"/>
-  with WordSpecLike //<co id="ch02-silentactor-test01-wordspec"/>
-  with MustMatchers //<co id="ch02-silentactor-test01-mustmatchers"/>
-  with StopSystemAfterAll { //<co id="ch02-silentactor-test01-stopsystem"/>
+class SilentActor01Test extends TestKit(ActorSystem("testsystem"))
+  with WordSpecLike
+  with MustMatchers
+  with StopSystemAfterAll {
 
-  "A Silent Actor" must { //<co id="ch02-silentactor-test01-textmust"/>
-    "change state when it receives a message, single threaded" in { //<co id="ch02-silentactor-test01-in"/>
-      //Write the test, first fail
-      fail("not implemented yet")
+  "A Silent Actor" must {
+    "change state when it receives a message, single threaded" in {
+      val silentActor = TestActorRef[SilentActor]
+      silentActor ! SilentMessage("whisper")
+      silentActor.underlyingActor.state must (contain("whisper"))
     }
+
     "change state when it receives a message, multi-threaded" in {
       //Write the test, first fail
       fail("not implemented yet")
     }
   }
-
 }
-//<end id="ch02-silentactor-test01"/>
 
-//<start id="ch02-silentactor-test01-imp"/>
+object SilentActor {
+  case class SilentMessage(data: String)
+  case class GetState(receiver: ActorRef)
+}
+
 class SilentActor extends Actor {
+  var internalState = Vector[String]()
+
   def receive = {
-    case msg => //<co id="ch02-silentactor-test01-imp-unit"/>
+    case SilentMessage(data) =>
+      internalState = internalState :+ data
   }
+
+  def state = internalState
 }
-//<end id="ch02-silentactor-test01-imp"/>
