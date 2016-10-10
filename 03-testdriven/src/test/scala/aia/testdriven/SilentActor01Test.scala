@@ -18,15 +18,22 @@ class SilentActor01Test extends TestKit(ActorSystem("testsystem"))
     }
 
     "change state when it receives a message, multi-threaded" in {
-      //Write the test, first fail
-      fail("not implemented yet")
+      val silentActor = system.actorOf(Props[SilentActor], "s3")
+      silentActor ! SilentMessage("whisper1")
+      silentActor ! SilentMessage("whisper2")
+      silentActor ! GetState(testActor)
+
+      expectMsg(Vector("whisper1", "whisper2"))
     }
   }
 }
 
 object SilentActor {
+
   case class SilentMessage(data: String)
+
   case class GetState(receiver: ActorRef)
+
 }
 
 class SilentActor extends Actor {
@@ -35,6 +42,9 @@ class SilentActor extends Actor {
   def receive = {
     case SilentMessage(data) =>
       internalState = internalState :+ data
+
+    case GetState(receiver) =>
+      receiver ! internalState
   }
 
   def state = internalState
