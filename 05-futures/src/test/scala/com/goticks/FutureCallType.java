@@ -1,0 +1,11 @@
+package com.goticks;
+
+public enum FutureCallType {
+  EVENT,
+  WEATHER_X,
+  WEATHER_Y,
+  TRAFFIC_SERVICE,
+  PUBLIC_TRANSPORT_SERVICE,
+  SIMILAR_ARTISTS_SERVICE,
+  ARTIST_CALENDAR_SERVICE
+}
