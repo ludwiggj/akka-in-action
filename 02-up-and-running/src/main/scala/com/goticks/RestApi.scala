@@ -1,24 +1,16 @@
 package com.goticks
 
 import akka.actor._
+import akka.event.LoggingAdapter
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 import akka.pattern.ask
 import akka.util.Timeout
-
 import scala.concurrent.ExecutionContext
 
-class RestApi(system: ActorSystem, timeout: Timeout) extends RestRoutes {
-  implicit val requestTimeout = timeout
-
-  implicit def executionContext = system.dispatcher
-
-  def createBoxOffice = system.actorOf(BoxOffice.props, BoxOffice.name)
-}
-
-trait RestRoutes extends BoxOfficeApi with EventMarshalling {
+trait RestApi extends BoxOfficeApi with EventMarshalling {
 
   import StatusCodes._
 
@@ -85,6 +77,8 @@ trait BoxOfficeApi {
 
   import BoxOffice._
 
+  def log: LoggingAdapter
+
   def createBoxOffice(): ActorRef
 
   implicit def executionContext: ExecutionContext
@@ -93,8 +87,10 @@ trait BoxOfficeApi {
 
   lazy val boxOffice = createBoxOffice()
 
-  def createEvent(event: String, nrOfTickets: Int) =
+  def createEvent(event: String, nrOfTickets: Int) = {
+    log.info(s"Received new event $event, sending to $boxOffice")
     boxOffice.ask(CreateEvent(event, nrOfTickets)).mapTo[EventResponse]
+  }
 
   def getEvents() =
     boxOffice.ask(GetEvents).mapTo[Events]
