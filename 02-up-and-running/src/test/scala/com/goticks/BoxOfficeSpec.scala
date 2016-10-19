@@ -12,6 +12,7 @@ class BoxOfficeSpec extends TestKit(ActorSystem("testBoxOffice"))
     with ImplicitSender
     with DefaultTimeout
     with StopSystemAfterAll {
+
   "The BoxOffice" must {
 
     "Create an event and get tickets from the correct Ticket Seller" in {

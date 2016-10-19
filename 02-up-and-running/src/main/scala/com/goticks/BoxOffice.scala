@@ -33,22 +33,26 @@ class BoxOffice(implicit timeout: Timeout) extends Actor {
   def receive: PartialFunction[Any, Unit] = {
     case CreateEvent(name, tickets) =>
       def create() = {
+        println(s"!!! Start > CreateEvent [name: $name, tickets: $tickets] !!!")
         val ticketSeller = createTicketSeller(name)
         val newTickets = (1 to tickets).map { ticketId =>
           TicketSeller.Ticket(ticketId)
         }.toVector
         ticketSeller ! TicketSeller.Add(newTickets)
         sender() ! EventCreated(Event(name, tickets))
+        println(s"!!! End > CreateEvent [name: $name, tickets: $tickets] !!!")
       }
       context.child(name).fold(create())(_ => sender() ! EventExists)
 
     case GetTickets(event, tickets) =>
+      println(s"!!! Start > GetTickets Called [event: $event, tickets: $tickets] !!!")
       def notFound() = sender() ! TicketSeller.Tickets(event)
 
       def buy(child: ActorRef) =
         child.forward(TicketSeller.Buy(tickets))
 
       context.child(event).fold(notFound())(buy)
+      println(s"!!! End > GetTickets Called [event: $event, tickets: $tickets] !!!")
 
     case GetEvent(event) =>
       def notFound() = sender() ! None
