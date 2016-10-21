@@ -27,5 +27,6 @@ libraryDependencies ++= {
     "com.typesafe.akka" %%  "akka-testkit"    % akkaVersion   % "test",
     "org.scalatest"     %%  "scalatest"       % "2.2.6"       % "test"
   )
-}
 
+//  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.0.13"
+}

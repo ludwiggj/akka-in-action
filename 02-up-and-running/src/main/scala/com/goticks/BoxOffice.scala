@@ -82,4 +82,3 @@ class BoxOffice(implicit timeout: Timeout) extends Actor {
       context.child(event).fold(notFound())(cancelEvent)
   }
 }
-
