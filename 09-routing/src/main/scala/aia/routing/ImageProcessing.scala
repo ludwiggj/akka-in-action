@@ -3,8 +3,6 @@ package aia.routing
 import java.text.SimpleDateFormat
 import java.util.Date
 
-case class Photo(license: String, speed: Int)
-
 object ImageProcessing {
   val dateFormat = new SimpleDateFormat("ddMMyyyy HH:mm:ss.SSS")
   def getSpeed(image: String): Option[Int] = {
@@ -32,9 +30,7 @@ object ImageProcessing {
     createPhotoString(date, speed, " ")
   }
 
-  def createPhotoString(date: Date,
-                        speed: Int,
-                        license: String): String = {
+  def createPhotoString(date: Date, speed: Int, license: String): String = {
     "%s|%s|%s".format(dateFormat.format(date), speed, license)
   }
 }

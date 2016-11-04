@@ -8,9 +8,7 @@ import org.scalatest.WordSpecLike
 
 import aia.testdriven.sideeffectingactor.GreeterTest._
 
-class GreeterTest extends TestKit(testSystem)
-  with WordSpecLike
-  with StopSystemAfterAll {
+class GreeterTest extends TestKit(testSystem) with WordSpecLike with StopSystemAfterAll {
 
   "The Greeter" must {
     "say Hello World! when a Greeting(\"World\") is sent to it" in {
